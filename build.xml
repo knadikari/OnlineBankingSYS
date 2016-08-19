@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="org.assigment.onlinebanking" default="test">
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="test" location="test" />
+	<property name="lib" location="lib" />
+	<path id="classpath.test">
+		<pathelement location="${lib}/junit-4.10.jar" />
+		<pathelement location="${lib}/mysql-connector-java-5.1.39-bin.jar" />
+		<pathelement location="${build}" />
+	</path>
+
+	<target name="clean">
+		<echo>Start Cleaning</echo>
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+		<echo>Coleaning Successful</echo>
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<echo>Start compiling</echo>
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="classpath.test" />
+		</javac>
+		<javac srcdir="${test}" destdir="${build}">
+			<classpath refid="classpath.test" />
+		</javac>
+		<echo>Compilation Successful</echo>
+	</target>
+
+	<target name="start-db" depends="compile">
+		<exec executable="C:\Program Files\MySQL\MySQL Server 5.7\bin\mysqld" osfamily="windows">
+		</exec>
+
+		<exec executable="mysql.server" osfamily="unix">
+			<arg value="start" />
+		</exec>
+	</target>
+
+	<target name="test" depends="start-db">
+		<junit>
+			<classpath refid="classpath.test" />
+			<batchtest>
+				<fileset dir="${test}">
+					<include name="**/*Test*" />
+				</fileset>
+			</batchtest>
+			<formatter type="brief" usefile="false" />
+		</junit>
+	</target>
+</project>
