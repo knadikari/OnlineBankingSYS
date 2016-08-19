@@ -149,12 +149,25 @@ public class Customer {
 			System.out.println("This user cannot acssese this account");
 		}
 	}
+	
+	public void credit(int accountId, double ammount){
+		Account account = getAccount(accountId);
+		account.credit(ammount);
+		
+	}
+	
+	public void withdraw(int accountId, double ammount){
+		Account account = getAccount(accountId);
+		account.debit(ammount);
+		
+	}
+	
 
 	public void sendAMessage(String message) {
 		try {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState.executeQuery("INSERT INTO bank VALUES(" + userName + " , " + message + ");");
+			ResultSet newResult = newState.executeQuery("INSERT INTO bank VALUES('" + userName + "' , '" + message + "');");
 			System.out.println("Message send succesful");
 
 		} catch (SQLException e) {
