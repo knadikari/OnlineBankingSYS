@@ -117,7 +117,7 @@ public class Account {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
 			ResultSet newResult = newState
-					.executeQuery("SELECT *FROM account WHERE account_Num=" + accountId + "AND customer_ID" + userName);
+					.executeQuery("SELECT *FROM account WHERE account_Num=" + accountId + "AND customer_ID ='" + userName + "';");
 			if (!newResult.wasNull()) {
 				return true;
 			} else {
@@ -135,7 +135,7 @@ public class Account {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
 			ResultSet newResult = newState
-					.executeQuery("SELECT *FROM account WHERE account_Num = '" + anotherAccountId + ";");
+					.executeQuery("SELECT *FROM account WHERE account_Num = " + anotherAccountId + ";");
 			if (newResult.next()) {
 				int accountNum = newResult.getInt("account_Num");
 				AccountType accountType = AccountType.valueOf(newResult.getString("account_Type"));
@@ -163,7 +163,7 @@ public class Account {
 			try {
 				Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 				Statement newState = newConn.createStatement();
-				newState.executeUpdate("UPDATE account SET account_Balance = "+ balance +" WHERE account_Num = '" + accountId + ";");
+				newState.executeUpdate("UPDATE account SET account_Balance = "+ balance +" WHERE account_Num = " + accountId + ";");
 				return true;
 
 			} catch (SQLException e) {
@@ -181,7 +181,7 @@ public class Account {
 		try {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
-			newState.executeUpdate("UPDATE account SET account_Balance = "+ balance +" WHERE account_Num = '" + accountId + ";");
+			newState.executeUpdate("UPDATE account SET account_Balance = "+ balance +" WHERE account_Num = " + accountId + ";");
 			return true;
 
 		} catch (SQLException e) {

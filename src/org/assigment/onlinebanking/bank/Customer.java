@@ -68,12 +68,12 @@ public class Customer {
 		}
 		return (account);
 	}
-	
+
 	public void getAccounts() {
 		for (Account ac : accounts) {
-			System.out.println("Account Num: "+ ac.getAccountId());
-			System.out.println("Account Type: "+ ac.getaccountType());
-			System.out.println("Account Balance: "+ ac.getBalance());
+			System.out.println("Account Num: " + ac.getAccountId());
+			System.out.println("Account Type: " + ac.getaccountType());
+			System.out.println("Account Balance: " + ac.getBalance());
 		}
 	}
 
@@ -119,7 +119,8 @@ public class Customer {
 		try {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState.executeQuery("SELECT *FROM customer WHERE customer_ID=" + userName);
+			ResultSet newResult = newState
+					.executeQuery("SELECT *FROM customer WHERE customer_ID= '" + userName + "');");
 			if (newResult.wasNull()) {
 				newState.executeUpdate("INSERT INTO customer VALUES( '" + userName + "' , '" + customerName + "' , '"
 						+ password + "');");
@@ -145,7 +146,7 @@ public class Customer {
 		try {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState.executeQuery("SELECT status login WHERE customer_ID=" + userName);
+			ResultSet newResult = newState.executeQuery("SELECT status login WHERE customer_ID= '" + userName + "');");
 			if (newResult.getString("status") == "YES") {
 				return (true);
 			} else {
@@ -167,8 +168,8 @@ public class Customer {
 		}
 
 	}
-	
-	public void checkTransfers(int accountId){
+
+	public void checkTransfers(int accountId) {
 		Account account = getAccount(accountId);
 	}
 
@@ -200,8 +201,22 @@ public class Customer {
 		try {
 			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
 			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState
-					.executeQuery("INSERT INTO bank VALUES('" + userName + "' , '" + message + "');");
+			newState.executeUpdate("INSERT INTO bank VALUES('" + userName + "' , '" + message + "');");
+			System.out.println("Message send succesful");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void changeName(String newName) {
+
+		try {
+			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
+			Statement newState = newConn.createStatement();
+			newState.executeUpdate("UPDATE customer SET customer_Name = '"+ newName +"' WHERE customer_ID= '" + userName + "';");
 			System.out.println("Message send succesful");
 
 		} catch (SQLException e) {
