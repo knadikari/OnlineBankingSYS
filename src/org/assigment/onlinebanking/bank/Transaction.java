@@ -26,6 +26,18 @@ public class Transaction {
 	private void settransactionType(TransactionType value) {
 		transactionType = value;
 	}
+	
+	public int gettransactionID(){
+		return(transactionID);
+	}
+	
+	public String gettransactionType(){
+		return(transactionType.toString());
+	}
+	
+	public double getammount(){
+		return(ammount);
+	}
 
 	public Transaction(double amount, TransactionType transactionType, int accountID){
 		try {

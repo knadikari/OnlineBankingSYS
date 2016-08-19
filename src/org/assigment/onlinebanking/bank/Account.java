@@ -35,6 +35,7 @@ public class Account {
 			setAccountId(newResult.getInt("account_Num"));
 			setAccountType(accountType);
 			setBalance(initialAmount);
+			setTransactions();
 			System.out.println("Account Created Succesful");
 
 		} catch (SQLException e) {
@@ -49,6 +50,7 @@ public class Account {
 		setAccountId(acccount_id);
 		setAccountType(account_type);
 		setBalance(account_balance);
+		setTransactions();
 	}
 
 	public Account(int accountId, String customerID) {
@@ -95,6 +97,15 @@ public class Account {
 
 	public double getBalance() {
 		return (balance);
+	}
+	
+	public void getTransactions(){
+		for(Transaction tr : transactions){
+			System.out.println("Transaction Num: "+ tr.gettransactionID());
+			System.out.println("Transaction Type: "+ tr.gettransactionType());
+			System.out.println("Transaction Amount: "+ tr.getammount());
+		}
+		
 	}
 
 	public boolean verifyUser(String userName) {

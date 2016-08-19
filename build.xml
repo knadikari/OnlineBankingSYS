@@ -21,7 +21,7 @@
 	
 	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
 		<classpath>
-	   		<pathelement location="${libdirectory}/aspectjtools-1.6.12.jar"/>
+	   		<pathelement location="${lib}/aspectjtools-1.6.12.jar"/>
 	  	</classpath>
 	</taskdef>
 

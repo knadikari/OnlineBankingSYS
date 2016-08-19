@@ -159,6 +159,10 @@ public class Customer {
 		}
 
 	}
+	
+	public void checkTransfers(int accountId){
+		Account account = getAccount(accountId);
+	}
 
 	public void transfer(int myAcountId, int anotherAccount, double ammount) {
 		Account myAccount = getAccount(myAcountId);

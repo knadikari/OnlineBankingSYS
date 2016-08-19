@@ -70,6 +70,12 @@ public class UI {
 			customer.transfer(accountNum, otherAccountNum, ammount);
 		}
 		
+		else if (selection == 5){
+			System.out.print("Enter your account number: ");
+			int accountNum = input.nextInt();
+			customer.checkTransfers(accountNum);
+		}
+		
 		else if (selection == 6){
 			System.out.println("Enter your message in  one line: ");
 			String message = input.next();
