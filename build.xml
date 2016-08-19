@@ -39,14 +39,14 @@
 	<target name="compile" depends="init">
 		<echo>Start compiling</echo>
 		
-		<iajc srcdir="${src}" destdir="${build}" source="1.5">
+		<javac srcdir="${src}" destdir="${build}" source="1.5">
 			<classpath refid="classpath.compile"/>
 			<include name="**/*.java"/>
-			<include name="**/*.aj"/>
-		</iajc>
+			<!--<include name="**/*.aj"/>-->
+		</javac>
 		
 		<javac srcdir="${test}" destdir="${build}">
-			<classpath refid="classpath.compile" />
+			<classpath refid="classpath.test" />
 		</javac>
 		<echo>Compilation Successful</echo>
 	</target>

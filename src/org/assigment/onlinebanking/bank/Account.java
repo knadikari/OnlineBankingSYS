@@ -99,6 +99,10 @@ public class Account {
 		return (balance);
 	}
 	
+	public String getaccountType() {
+		return (accountType.toString());
+	}
+	
 	public void getTransactions(){
 		for(Transaction tr : transactions){
 			System.out.println("Transaction Num: "+ tr.gettransactionID());

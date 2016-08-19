@@ -35,7 +35,7 @@ public class UI {
 			System.exit(0);
 		}
 		
-		System.out.println("1)Check balance\n2)Credit the account\n3)Withdraw from the account\n4)Transfer money to a account\n5)History of Inquiries\n6)Send a messsage to the bank\n7)Log out");
+		System.out.println("1)Check balance\n2)Credit the account\n3)Withdraw from the account\n4)Transfer money to a account\n5)History of Inquiries\n6)Send a messsage to the bank\n7)Details of accounts\n8)Log out");
 		System.out.print("Select your number: ");
 		selection = input.nextInt();
 		
@@ -83,6 +83,10 @@ public class UI {
 		}
 		
 		else if (selection == 7){
+			customer.getAccounts();
+		}
+		
+		else{
 			customer.logout();
 			System.exit(0);
 		}

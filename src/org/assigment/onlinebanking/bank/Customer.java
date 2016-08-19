@@ -68,6 +68,14 @@ public class Customer {
 		}
 		return (account);
 	}
+	
+	public void getAccounts() {
+		for (Account ac : accounts) {
+			System.out.println("Account Num: "+ ac.getAccountId());
+			System.out.println("Account Type: "+ ac.getaccountType());
+			System.out.println("Account Balance: "+ ac.getBalance());
+		}
+	}
 
 	public void login(String userName, String password) {
 		try {
