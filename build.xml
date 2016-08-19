@@ -2,13 +2,28 @@
 <project name="org.assigment.onlinebanking" default="test">
 	<property name="src" location="src" />
 	<property name="build" location="build" />
+	<property name="jardirectory" value="${build}/jar"></property>
 	<property name="test" location="test" />
 	<property name="lib" location="lib" />
+	<property name="mainclass" value="org/assigment/onlinebanking/ui/UI"></property>
+	
+	<path id="classpath.compile">
+		<fileset id="lib" dir="${lib}">
+			<include name="aspectj-1.8.9.jar"/>
+			<include name="mysql-connector-java-5.1.39-bin.jar"/>
+		</fileset>
+	</path>
+	
 	<path id="classpath.test">
 		<pathelement location="${lib}/junit-4.10.jar" />
-		<pathelement location="${lib}/mysql-connector-java-5.1.39-bin.jar" />
 		<pathelement location="${build}" />
 	</path>
+	
+	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+		<classpath>
+	   		<pathelement location="${libdirectory}/aspectjtools-1.6.12.jar"/>
+	  	</classpath>
+	</taskdef>
 
 	<target name="clean">
 		<echo>Start Cleaning</echo>
@@ -23,11 +38,15 @@
 
 	<target name="compile" depends="init">
 		<echo>Start compiling</echo>
-		<javac srcdir="${src}" destdir="${build}">
-			<classpath refid="classpath.test" />
-		</javac>
+		
+		<iajc srcdir="${src}" destdir="${build}" source="1.5">
+			<classpath refid="classpath.compile"/>
+			<include name="**/*.java"/>
+			<include name="**/*.aj"/>
+		</iajc>
+		
 		<javac srcdir="${test}" destdir="${build}">
-			<classpath refid="classpath.test" />
+			<classpath refid="classpath.compile" />
 		</javac>
 		<echo>Compilation Successful</echo>
 	</target>
@@ -52,4 +71,19 @@
 			<formatter type="brief" usefile="false" />
 		</junit>
 	</target>
+	
+	<target name="jar" depends="compile">
+	        <mkdir dir="${jardirectory}"/>
+	        <jar destfile="${jardirectory}/${ant.project.name}.jar" basedir="${build}">
+	        	<zipgroupfileset dir="${lib}" includes="*.jar" />
+	            <manifest>
+	                <attribute name="Main-Class" value="${mainclass}"/>
+	            </manifest>
+	        </jar>
+	    </target>
+
+
+	    <target name="run" depends="jar">
+	        <java jar="${jardirectory}/${ant.project.name}.jar" fork="true"/>
+	    </target>
 </project>
