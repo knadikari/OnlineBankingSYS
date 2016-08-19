@@ -18,12 +18,12 @@ public aspect LoggerAspect {
 	}
 	
 	
-	/*pointcut LoginRecord(Customer customer) : call(* Customer.login(String , String)) && (target(Customer));
+	pointcut LoginRecord(Customer customer) : call(* Customer.login(String , String)) && (target(Customer));
 	
 	after(Customer customer) : LoginRecord(customer){
 		String msg = "User Name: "+customer.getUserName();
 		WriteFile(msg, "loginLog.txt");
-	}*/
+	}
 	
 	public void WriteFile(String Log, String fileName){
 		  try {
