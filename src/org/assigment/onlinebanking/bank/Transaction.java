@@ -1,16 +1,16 @@
 package org.assigment.onlinebanking.bank;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import org.assigment.onlinebanking.db.DbConnection;
 
 public class Transaction {
 
 	private static int transactionID;
-	private static TransactionType transactionType;
+	private TransactionType transactionType;
 	private static double ammount;
+	private DbConnection dbConnection = DbConnection.getConnection();
 
 	public enum TransactionType {
 		CREDIT, DEBIT;
@@ -40,13 +40,12 @@ public class Transaction {
 	}
 
 	public Transaction(double amount, TransactionType transactionType, int accountID){
+		String query = "INSERT INTO account (transaction_Ammount, transaction_Type, transaction_AccountID) VALUES(" + amount
+				+ " , '" + transactionType + "' , " + accountID + " );";
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			newState
-					.executeQuery("INSERT INTO account (transaction_Ammount, transaction_Type, transaction_AccountID) VALUES(" + amount
-							+ " , '" + transactionType + "' , " + accountID + " );");
-			ResultSet newResult = newState.executeQuery("SELECT transactionID FROM transaction WHERE transaction_AccountID= "+ accountID + " ;");
+			dbConnection.runQuery(query);
+			query = "SELECT transactionID FROM transaction WHERE transaction_AccountID= "+ accountID + " ;";
+			ResultSet newResult = dbConnection.getDbResult(query);
 			newResult.last();
 			settransactionID(newResult.getInt("transaction_ID"));
 			setAmmount(amount);
@@ -54,7 +53,6 @@ public class Transaction {
 			System.out.println("Transaction was Succesful");
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Transaction was Unsuccesful");
 		}

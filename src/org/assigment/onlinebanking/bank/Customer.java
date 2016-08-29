@@ -1,21 +1,18 @@
 package org.assigment.onlinebanking.bank;
 
-import java.nio.charset.MalformedInputException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.assigment.onlinebanking.bank.Account.AccountType;
+import org.assigment.onlinebanking.db.DbConnection;
 
 public class Customer {
 
 	private static String userName;
-	private String password;
 	private List<Account> accounts = new ArrayList<Account>();
+	private DbConnection dbConnection = DbConnection.getConnection();
 
 	public Customer(String userName, String password) {
 		login(userName, password);
@@ -24,10 +21,6 @@ public class Customer {
 
 	public Customer(String userName, String password, String customerName) {
 		register(userName, password, customerName);
-	}
-
-	private void setPassword(String value) {
-		password = value;
 	}
 
 	private void setUserName(String value) {
@@ -39,11 +32,10 @@ public class Customer {
 	}
 
 	private void setBankAccounts() {
+		String query = "SELECT *FROM account WHERE account_customer_ID= '" + userName + "';";
+		
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState
-					.executeQuery("SELECT *FROM account WHERE account_customer_ID= '" + userName + "';");
+			ResultSet newResult = dbConnection.getDbResult(query);
 			while (newResult.next()) {
 				int accountNum = newResult.getInt("account_Num");
 				AccountType accountType = AccountType.valueOf(newResult.getString("account_Type"));
@@ -52,7 +44,6 @@ public class Customer {
 				accounts.add(newAccount);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Adding account Unsucsessful");
 		}
@@ -78,37 +69,33 @@ public class Customer {
 	}
 
 	public void login(String userName, String password) {
+		String query = "SELECT *FROM customer WHERE customer_ID= '" + userName + "' AND customer_password= '" + password
+				+ "';";
+		ResultSet newResult = dbConnection.getDbResult(query);
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState.executeQuery("SELECT *FROM customer WHERE customer_ID= '" + userName
-					+ "' AND customer_password= '" + password + "';");
 			if (newResult.next()) {
-				newState.executeUpdate("UPDATE login SET status= 'YES' WHERE customer_ID= '" + userName + "';");
+				query = "UPDATE login SET status= 'YES' WHERE customer_ID= '" + userName + "';";
+				dbConnection.runQuery(query);
 				System.out.println("Login succesful");
 				setUserName(userName);
-				setPassword(password);
 
 			} else {
 				System.out.println("Login was Unsuccesful");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Login was Unsuccesful");
 		}
-
 		setBankAccounts();
 	}
 
 	public void logout() {
+		String query = "UPDATE login SET status= 'NO' WHERE customer_ID= '" + userName + "';";
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			newState.executeUpdate("UPDATE login SET status= 'NO' WHERE customer_ID= '" + userName + "';");
+			dbConnection.runQuery(query);
 			System.out.println("Log out sucsessful");
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Log out Unsucsessful");
@@ -116,14 +103,12 @@ public class Customer {
 	}
 
 	private void register(String userName, String password, String customerName) {
+		String query = "SELECT *FROM customer WHERE customer_ID= '" + userName + "');";
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState
-					.executeQuery("SELECT *FROM customer WHERE customer_ID= '" + userName + "');");
+			ResultSet newResult = dbConnection.getDbResult(query);
 			if (newResult.wasNull()) {
-				newState.executeUpdate("INSERT INTO customer VALUES( '" + userName + "' , '" + customerName + "' , '"
-						+ password + "');");
+				query = "INSERT INTO customer VALUES( '" + userName + "' , '" + customerName + "' , '" + password + "');";
+				dbConnection.runQuery(query);
 				System.out.println("Registration succesful");
 				login(userName, password);
 			} else {
@@ -143,17 +128,15 @@ public class Customer {
 	}
 
 	public boolean isLogin() {
+		String query = "SELECT status login WHERE customer_ID= '" + userName + "');";
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			ResultSet newResult = newState.executeQuery("SELECT status login WHERE customer_ID= '" + userName + "');");
+			ResultSet newResult = dbConnection.getDbResult(query);
 			if (newResult.getString("status") == "YES") {
 				return (true);
 			} else {
 				return (false);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return (false);
 		}
@@ -171,6 +154,7 @@ public class Customer {
 
 	public void checkTransfers(int accountId) {
 		Account account = getAccount(accountId);
+		account.getTransactions();
 	}
 
 	public void transfer(int myAcountId, int anotherAccount, double ammount) {
@@ -198,30 +182,29 @@ public class Customer {
 	}
 
 	public void sendAMessage(String message) {
+		String query = "INSERT INTO bank VALUES('" + userName + "' , '" + message + "');";
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			newState.executeUpdate("INSERT INTO bank VALUES('" + userName + "' , '" + message + "');");
+			dbConnection.runQuery(query);
 			System.out.println("Message send succesful");
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("Message send Unsuccesful");
 		}
 
 	}
 
 	public void changeName(String newName) {
+		
+		String query = "UPDATE customer SET customer_Name = '" + newName + "' WHERE customer_ID= '" + userName + "';";
 
 		try {
-			Connection newConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "root", "admin");
-			Statement newState = newConn.createStatement();
-			newState.executeUpdate("UPDATE customer SET customer_Name = '"+ newName +"' WHERE customer_ID= '" + userName + "';");
-			System.out.println("Message send succesful");
+			dbConnection.runQuery(query);
+			System.out.println("Change name Succesful");
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("Change name Unsuccesful");
 		}
 
 	}

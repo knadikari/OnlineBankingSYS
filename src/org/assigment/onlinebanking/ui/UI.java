@@ -33,6 +33,7 @@ public class UI {
 		}
 		else{
 			System.exit(0);
+			input.close();
 		}
 		
 		System.out.println("1)Check balance\n2)Credit the account\n3)Withdraw from the account\n4)Transfer money to a account\n5)History of Inquiries\n6)Send a messsage to the bank\n7)Details of accounts\n8)Manage the profile\n9)Log out");
@@ -98,6 +99,7 @@ public class UI {
 		else{
 			customer.logout();
 			System.exit(0);
+			input.close();
 		}
 	}
 
