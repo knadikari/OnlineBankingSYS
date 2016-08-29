@@ -51,9 +51,9 @@ public class Customer {
 
 	public Account getAccount(int accountId) {
 		Account account = null;
-		for (int i = 0; i < accounts.size() - 1; i++) {
-			if (accounts.get(i).getAccountId() == accountId) {
-				account = accounts.get(i);
+		for (Account ac : accounts) {
+			if (ac.getAccountId() == accountId) {
+				account = ac;
 				break;
 			}
 		}
