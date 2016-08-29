@@ -15,15 +15,12 @@ public class DbConnection {
 	private static final String DB_CONNECTION = "jdbc:mysql://localhost:" + PORT_NUMBER + "/" + DB_NAME; 
 	private static DbConnection dbConnection = new DbConnection();
 	private Connection newConn;
-	private Statement newState;
-	private ResultSet newResult;
 	
 	
 	
 	private DbConnection(){
 		try {
-		newConn = DriverManager.getConnection(DB_CONNECTION, ROOT_NAME, PASSWORD);
-		newState = newConn.createStatement();	
+		newConn = DriverManager.getConnection(DB_CONNECTION, ROOT_NAME, PASSWORD);	
 		} catch (SQLException e){
 			e.printStackTrace();
 		}
@@ -35,6 +32,7 @@ public class DbConnection {
 	public boolean runQuery(String sqlQuery){
 		
 		try {
+			Statement newState = newConn.createStatement();	
 			newState.executeUpdate(sqlQuery);
 			return true;
 
@@ -47,7 +45,8 @@ public class DbConnection {
 	public ResultSet getDbResult(String sqlQuery){
 		
 		try {
-			newResult = newState.executeQuery(sqlQuery);
+			Statement newState = newConn.createStatement();	
+			ResultSet newResult = newState.executeQuery(sqlQuery);
 			return newResult;
 			
 		} catch (SQLException e) {
@@ -69,8 +68,7 @@ public class DbConnection {
 	
 	public void reconnect(){
 		try {
-		newConn = DriverManager.getConnection(DB_CONNECTION, ROOT_NAME, PASSWORD);
-		newState = newConn.createStatement();	
+		newConn = DriverManager.getConnection(DB_CONNECTION, ROOT_NAME, PASSWORD);	
 		} catch (SQLException e){
 			e.printStackTrace();
 		}

@@ -3,7 +3,6 @@ package org.assigment.onlinebanking.bank;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.assigment.onlinebanking.bank.Account.AccountType;
 import org.assigment.onlinebanking.db.DbConnection;
@@ -11,7 +10,7 @@ import org.assigment.onlinebanking.db.DbConnection;
 public class Customer {
 
 	private static String userName;
-	private List<Account> accounts = new ArrayList<Account>();
+	private ArrayList<Account> accounts = new ArrayList<Account>();
 	private DbConnection dbConnection = DbConnection.getConnection();
 
 	public Customer(String userName, String password) {
@@ -35,13 +34,14 @@ public class Customer {
 		String query = "SELECT *FROM account WHERE account_customer_ID= '" + userName + "';";
 		
 		try {
-			ResultSet newResult = dbConnection.getDbResult(query);
-			while (newResult.next()) {
-				int accountNum = newResult.getInt("account_Num");
-				AccountType accountType = AccountType.valueOf(newResult.getString("account_Type"));
-				double balance = newResult.getDouble("account_Balance");
+			ResultSet accountResult = dbConnection.getDbResult(query);
+			while (accountResult.next()) {
+				int accountNum = accountResult.getInt("account_Num");
+				AccountType accountType = AccountType.valueOf(accountResult.getString("account_Type"));
+				double balance = accountResult.getDouble("account_Balance");
 				Account newAccount = new Account(accountNum, accountType, balance);
 				accounts.add(newAccount);
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -51,10 +51,10 @@ public class Customer {
 
 	public Account getAccount(int accountId) {
 		Account account = null;
-		for (Account ac : accounts) {
-			if (ac.getAccountId() == accountId) {
-				account = ac;
-				break;
+		for (int i=0; i<accounts.size();i++ ) {
+			if (accounts.get(i).getAccountId() == accountId) {
+				account = accounts.get(i);
+				return (account);
 			}
 		}
 		return (account);
@@ -71,8 +71,8 @@ public class Customer {
 	public void login(String userName, String password) {
 		String query = "SELECT *FROM customer WHERE customer_ID= '" + userName + "' AND customer_password= '" + password
 				+ "';";
-		ResultSet newResult = dbConnection.getDbResult(query);
 		try {
+			ResultSet newResult = dbConnection.getDbResult(query);
 			if (newResult.next()) {
 				query = "UPDATE login SET status= 'YES' WHERE customer_ID= '" + userName + "';";
 				dbConnection.runQuery(query);
@@ -128,10 +128,11 @@ public class Customer {
 	}
 
 	public boolean isLogin() {
-		String query = "SELECT status login WHERE customer_ID= '" + userName + "');";
+		String query = "SELECT * FROM login WHERE customer_ID= '" + userName + "';";
 		try {
 			ResultSet newResult = dbConnection.getDbResult(query);
-			if (newResult.getString("status") == "YES") {
+			newResult.next();
+			if (newResult.getString("status").equals("YES")) {
 				return (true);
 			} else {
 				return (false);

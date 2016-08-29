@@ -7,9 +7,9 @@ import org.assigment.onlinebanking.db.DbConnection;
 
 public class Transaction {
 
-	private static int transactionID;
+	private int transactionID;
 	private TransactionType transactionType;
-	private static double ammount;
+	private double ammount;
 	private DbConnection dbConnection = DbConnection.getConnection();
 
 	public enum TransactionType {
@@ -45,9 +45,9 @@ public class Transaction {
 		try {
 			dbConnection.runQuery(query);
 			query = "SELECT transactionID FROM transaction WHERE transaction_AccountID= "+ accountID + " ;";
-			ResultSet newResult = dbConnection.getDbResult(query);
-			newResult.last();
-			settransactionID(newResult.getInt("transaction_ID"));
+			ResultSet newTransaction = dbConnection.getDbResult(query);
+			newTransaction.last();
+			settransactionID(newTransaction.getInt("transaction_ID"));
 			setAmmount(amount);
 			settransactionType(transactionType);
 			System.out.println("Transaction was Succesful");

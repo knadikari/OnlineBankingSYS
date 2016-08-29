@@ -10,6 +10,7 @@
 	<path id="classpath.compile">
 		<fileset id="lib" dir="${lib}">
 			<include name="aspectj-1.8.9.jar"/>
+			<include name="aspectjrt.jar"/>
 			<include name="mysql-connector-java-5.1.39-bin.jar"/>
 		</fileset>
 	</path>
@@ -29,21 +30,21 @@
 		<echo>Start Cleaning</echo>
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
-		<echo>Coleaning Successful</echo>
+		<echo>Cleaning Successful</echo>
 	</target>
 
 	<target name="init" depends="clean">
-		<mkdir dir="${build}" />
+		<mkdir dir="${build}" /> 
 	</target>
 
 	<target name="compile" depends="init">
 		<echo>Start compiling</echo>
 		
-		<javac srcdir="${src}" destdir="${build}" source="1.5">
+		<iajc srcdir="${src}" destdir="${build}" source="1.5">
 			<classpath refid="classpath.compile"/>
 			<include name="**/*.java"/>
-			<!--<include name="**/*.aj"/>-->
-		</javac>
+			<include name="**/*.aj"/>
+		</iajc>
 		
 		<javac srcdir="${test}" destdir="${build}">
 			<classpath refid="classpath.test" />

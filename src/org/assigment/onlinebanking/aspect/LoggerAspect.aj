@@ -4,13 +4,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
+
 
 import org.assigment.onlinebanking.bank.Customer;
 
 public aspect LoggerAspect {
 	
-	pointcut ExceptionRecord() : call(* *.*.*(..));
+	pointcut ExceptionRecord() : call(*  *.*(..));
 
 	after() throwing(Exception t) : ExceptionRecord(){
 	    System.err.println(" Log "+t.getMessage());
@@ -18,7 +18,7 @@ public aspect LoggerAspect {
 	}
 	
 	
-	pointcut LoginRecord(Customer customer) : call(* Customer.login(String , String)) && target(Customer);
+	pointcut LoginRecord(Customer customer) : call(* Customer.login(String , String)) && target(customer);
 	
 	after(Customer customer) : LoginRecord(customer){
 		String msg = "User Name: "+customer.getUserName();

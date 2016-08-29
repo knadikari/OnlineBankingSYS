@@ -3,17 +3,16 @@ package org.assigment.onlinebanking.bank;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.assigment.onlinebanking.bank.Transaction.TransactionType;
 import org.assigment.onlinebanking.db.DbConnection;
 
 public class Account {
 
-	private static int accountId;
-	private static AccountType accountType;
+	private int accountId;
+	private AccountType accountType;
 	private double balance;
-	private List<Transaction> transactions =new ArrayList<Transaction>();
+	private ArrayList<Transaction> transactions =new ArrayList<Transaction>();
 	private DbConnection dbConnection = DbConnection.getConnection();
 
 	public enum AccountType {
@@ -67,18 +66,18 @@ public class Account {
 	private void setTransactions(){
 		String query = "SELECT *FROM transaction WHERE transaction_AccountID= '" + accountId + "';";
 		try {
-			ResultSet newResult = dbConnection.getDbResult(query);
-			while (newResult.next()) {
-				int transactionId = newResult.getInt("transaction_ID");
-				double ammount = newResult.getInt("transaction_Ammount");
-				TransactionType transactionType = TransactionType.valueOf(newResult.getString("transaction_Type"));
-				
-				Transaction newAccount = new Transaction(transactionId, ammount, transactionType);
-				transactions.add(newAccount);
+			ResultSet transactionResult = dbConnection.getDbResult(query);
+			while (transactionResult.next()) {
+				int transactionId = transactionResult.getInt("transaction_ID");
+				double ammount = transactionResult.getDouble("transaction_Ammount");
+				TransactionType transactionType = TransactionType.valueOf(transactionResult.getString("transaction_Type"));
+				Transaction newTransaction = new Transaction(transactionId, ammount, transactionType);
+				transactions.add(newTransaction);
 			}
+			System.out.println("Adding transaction Sucsessful");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Adding account Unsucsessful");
+			System.out.println("Adding transaction Unsucsessful");
 		}
 	}
 
